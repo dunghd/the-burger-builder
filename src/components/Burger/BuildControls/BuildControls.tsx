@@ -21,7 +21,8 @@ export interface IBuildControlProps {
   ingredientRemoved: (type: string) => void,
   disabled: IIngredient,
   price: number,
-  purchasable: boolean
+  purchasable: boolean,
+  ordered: () => void
 };
 
 const buildControls = (props: React.PropsWithChildren<IBuildControlProps>) => (
@@ -37,7 +38,8 @@ const buildControls = (props: React.PropsWithChildren<IBuildControlProps>) => (
     )}
     <button
       className={classes.OrderButton}
-      disabled={!props.purchasable}>ORDER NOW</button>
+      disabled={!props.purchasable}
+      onClick={props.ordered}>ORDER NOW</button>
   </div>
 );
 

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Burger from '../../components/Burger/Burger';
 import { IIngredient } from '../../components/Burger/BurgerIngredient/BurgerIngredient';
+import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
+import Modal from '../../components/UI/Modal/Modal';
 import Auxiliary from '../../hoc/Auxiliary';
 
 export interface IBurgerBuilderProps { };
@@ -9,7 +11,8 @@ export interface IBurgerBuilderProps { };
 export interface IBurgerBuilderState {
   ingredients: IIngredient;
   totalPrice: number,
-  purchasable: boolean
+  purchasable: boolean,
+  purchasing: boolean
 };
 
 export interface IIngredientPrice {
@@ -32,7 +35,8 @@ class BurgerBuilder extends Component<IBurgerBuilderProps, IBurgerBuilderState> 
       meat: 0
     },
     totalPrice: 4,
-    purchasable: false
+    purchasable: false,
+    purchasing: false
   } as IBurgerBuilderState;
 
   updatePurchaseState(ingredients: IIngredient) {
@@ -81,6 +85,10 @@ class BurgerBuilder extends Component<IBurgerBuilderProps, IBurgerBuilderState> 
     this.updatePurchaseState(updatedIngredients);
   };
 
+  purchaseHandler = () => {
+    this.setState({ purchasing: true });
+  }
+
   render() {
     const disabledInfo = {
       ...this.state.ingredients
@@ -92,13 +100,17 @@ class BurgerBuilder extends Component<IBurgerBuilderProps, IBurgerBuilderState> 
 
     return (
       <Auxiliary>
+        <Modal show={this.state.purchasing}>
+          <OrderSummary ingredients={this.state.ingredients} />
+        </Modal>
         <Burger ingredients={this.state.ingredients} />
         <BuildControls
           ingredientAdded={this.addIngredientHandler}
           ingredientRemoved={this.removeIngredientHandler}
           disabled={disabledInfo}
           purchasable={this.state.purchasable}
-          price={this.state.totalPrice} />
+          price={this.state.totalPrice}
+          ordered={this.purchaseHandler} />
       </Auxiliary>
     );
   }

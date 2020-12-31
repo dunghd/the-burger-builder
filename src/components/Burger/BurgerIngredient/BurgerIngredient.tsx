@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import React, { Component } from 'react';
 
 import classes from './BurgerIngredient.module.css';
 
@@ -6,40 +6,48 @@ export interface IBurgerIngredientProps {
   type: string
 };
 
-const burgerIngredient = (props: PropsWithChildren<IBurgerIngredientProps>) => {
-  let ingredient = null;
+export interface IBurgerBuilderState { };
 
-  switch (props.type) {
-    case 'bread-bottom':
-      ingredient = <div className={classes.BreadBottom}></div>;
-      break;
-    case 'bread-top':
-      ingredient = (
-        <div className={classes.BreadTop}>
-          <div className={classes.Seeds1}></div>
-          <div className={classes.Seeds2}></div>
-        </div>
-      );
-      break;
-    case 'meat':
-      ingredient = <div className={classes.Meat}></div>
-      break;
-    case 'cheese':
-      ingredient = <div className={classes.Cheese}></div>
-      break;
-    case 'bacon':
-      ingredient = <div className={classes.Bacon}></div>
-      break;
-    case 'salad':
-      ingredient = <div className={classes.Salad}></div>
-      break;
-
-    default:
-      ingredient = null;
-      break;
-  }
-
-  return ingredient;
+export interface IIngredient {
+  [key: string]: number | boolean;
 };
 
-export default burgerIngredient;
+class BurgerIngredient extends Component<IBurgerIngredientProps, IBurgerBuilderState> {
+  render() {
+    let ingredient = null;
+
+    switch (this.props.type) {
+      case 'bread-bottom':
+        ingredient = <div className={classes.BreadBottom}></div>;
+        break;
+      case 'bread-top':
+        ingredient = (
+          <div className={classes.BreadTop}>
+            <div className={classes.Seeds1}></div>
+            <div className={classes.Seeds2}></div>
+          </div>
+        );
+        break;
+      case 'meat':
+        ingredient = <div className={classes.Meat}></div>
+        break;
+      case 'cheese':
+        ingredient = <div className={classes.Cheese}></div>
+        break;
+      case 'bacon':
+        ingredient = <div className={classes.Bacon}></div>
+        break;
+      case 'salad':
+        ingredient = <div className={classes.Salad}></div>
+        break;
+
+      default:
+        ingredient = null;
+        break;
+    }
+
+    return ingredient;
+  };
+}
+
+export default BurgerIngredient;

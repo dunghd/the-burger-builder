@@ -1,19 +1,46 @@
-import React, { PropsWithChildren } from 'react';
+import React, { Component } from 'react';
 
 import Aux from '../../hoc/Auxiliary';
+import SideDrawer from '../Navigation/SideDrawer/SideDrawer';
+import Toolbar from '../Navigation/Toolbar/Toolbar';
 import classes from './Layout.module.css';
 
 export interface ILayoutProps {
 
 };
 
-const layout = (props: PropsWithChildren<ILayoutProps>) => (
-  <Aux>
-    <div>Toolbar, SideDrawer, Backdrop</div>
-    <main className={classes.Content}>
-      {props.children}
-    </main>
-  </Aux>
-);
+export interface ILayoutState {
+  showSideDrawer: boolean
+};
 
-export default layout;
+class Layout extends Component<ILayoutProps, ILayoutState>  {
+  state = {
+    showSideDrawer: true
+  } as ILayoutState;
+
+  sideDrawerClosedHandler = () => {
+    this.setState({ showSideDrawer: false });
+  };
+
+  sideDrawerToggleHandler = () => {
+    this.setState((prevState: ILayoutState) => {
+      return { showSideDrawer: !prevState.showSideDrawer }
+    });
+  };
+
+  render() {
+    return (
+      <Aux>
+        <Toolbar drawerToggleClicked={this.sideDrawerToggleHandler} />
+        <SideDrawer
+          open={this.state.showSideDrawer}
+          closed={this.sideDrawerClosedHandler} />
+        <main className={classes.Content}>
+          {this.props.children}
+        </main>
+      </Aux>
+    )
+  }
+};
+
+export default Layout;

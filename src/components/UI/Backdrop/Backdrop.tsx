@@ -4,7 +4,7 @@ import classes from './Backdrop.module.css';
 
 export interface IBackdropProps {
   show: boolean;
-  click: () => void
+  click?: () => void
 };
 
 const backdrop = (props: React.PropsWithChildren<IBackdropProps>) => (

@@ -4,7 +4,7 @@ import Burger from '../../components/Burger/Burger';
 import { IIngredient } from '../../components/Burger/BurgerIngredient/BurgerIngredient';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import Modal from '../../components/UI/Modal/Modal';
-import Auxiliary from '../../hoc/Auxiliary';
+import Auxiliary from '../../hoc/Auxiliary/Auxiliary';
 
 export interface IBurgerBuilderProps { };
 

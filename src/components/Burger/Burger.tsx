@@ -19,7 +19,7 @@ const burger = (props: React.PropsWithChildren<IBurgerProps>) => {
     }, []);
 
   if (transformedIngredients.length === 0) {
-    transformedIngredients = new Array(<p>Please start adding ingredients!</p>);
+    transformedIngredients = new Array(<p key={null}>Please start adding ingredients!</p>);
   }
 
   return (

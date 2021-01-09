@@ -7,6 +7,7 @@ import Modal from '../../components/UI/Modal/Modal';
 import Auxiliary from '../../hoc/Auxiliary/Auxiliary';
 import axios from '../../axios-orders';
 import Spinner from '../../components/UI/Spinner/Spinner';
+import withErrorHandler from '../../hoc/withErrorHandl/withErrorHandler';
 
 export interface IBurgerBuilderProps { };
 
@@ -181,4 +182,4 @@ class BurgerBuilder extends Component<IBurgerBuilderProps, IBurgerBuilderState> 
   }
 }
 
-export default BurgerBuilder;
+export default withErrorHandler(BurgerBuilder, axios);

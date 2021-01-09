@@ -6,7 +6,7 @@ import classes from './Modal.module.css';
 
 export interface IModalProps {
   show: boolean,
-  modalClosed: () => void
+  modalClosed?: () => void
 };
 
 export interface IModalState { };

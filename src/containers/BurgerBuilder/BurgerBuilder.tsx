@@ -5,6 +5,8 @@ import { IIngredient } from '../../components/Burger/BurgerIngredient/BurgerIngr
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import Modal from '../../components/UI/Modal/Modal';
 import Auxiliary from '../../hoc/Auxiliary/Auxiliary';
+import axios from '../../axios-orders';
+import Spinner from '../../components/UI/Spinner/Spinner';
 
 export interface IBurgerBuilderProps { };
 
@@ -12,11 +14,31 @@ export interface IBurgerBuilderState {
   ingredients: IIngredient;
   totalPrice: number,
   purchasable: boolean,
-  purchasing: boolean
+  purchasing: boolean,
+  loading: boolean
 };
 
 export interface IIngredientPrice {
   [key: string]: number
+};
+
+export interface IAddress {
+  street: string,
+  zipCode: string,
+  country: string
+};
+
+export interface ICustomer {
+  name: string,
+  address: IAddress,
+  email: string
+};
+
+export interface IOrder {
+  ingredients: IIngredient,
+  price: number,
+  customer: ICustomer,
+  deliveryMethod: string
 };
 
 const INGREDIENT_PRICES = {
@@ -36,7 +58,8 @@ class BurgerBuilder extends Component<IBurgerBuilderProps, IBurgerBuilderState> 
     },
     totalPrice: 4,
     purchasable: false,
-    purchasing: false
+    purchasing: false,
+    loading: false
   } as IBurgerBuilderState;
 
   updatePurchaseState(ingredients: IIngredient) {
@@ -94,7 +117,30 @@ class BurgerBuilder extends Component<IBurgerBuilderProps, IBurgerBuilderState> 
   }
 
   purchaseContinueHandler = () => {
-    alert('You continue!');
+    // alert('You continue!');
+    this.setState({ loading: true });
+    const order = {
+      ingredients: this.state.ingredients,
+      price: this.state.totalPrice,
+      customer: {
+        name: 'DDH',
+        address: {
+          street: 'Bach Dang',
+          zipCode: '72108',
+          country: 'Vietnam'
+        },
+        email: 'test@email.com',
+      },
+      deliveryMethod: 'fastest'
+    } as IOrder;
+
+    axios.post('/orders.json', order)
+      .then(response => {
+        this.setState({ loading: false, purchasing: false });
+      })
+      .catch(error => {
+        this.setState({ loading: false, purchasing: false });
+      });
   };
 
   render() {
@@ -106,16 +152,21 @@ class BurgerBuilder extends Component<IBurgerBuilderProps, IBurgerBuilderState> 
       disabledInfo[key] = disabledInfo[key] <= 0;
     }
 
+    let orderSummary = <OrderSummary
+      ingredients={this.state.ingredients}
+      purchaseCancelled={this.purchaseCancelHandler}
+      purchaseContinued={this.purchaseContinueHandler}
+      price={this.state.totalPrice} />;
+    if (this.state.loading) {
+      orderSummary = <Spinner />
+    }
+
     return (
       <Auxiliary>
         <Modal
           show={this.state.purchasing}
           modalClosed={this.purchaseCancelHandler}>
-          <OrderSummary
-            ingredients={this.state.ingredients}
-            purchaseCancelled={this.purchaseCancelHandler}
-            purchaseContinued={this.purchaseContinueHandler}
-            price={this.state.totalPrice} />
+          {orderSummary}
         </Modal>
         <Burger ingredients={this.state.ingredients} />
         <BuildControls

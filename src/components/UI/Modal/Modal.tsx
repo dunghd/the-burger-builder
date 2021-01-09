@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropsWithChildren } from 'react';
 import Auxiliary from '../../../hoc/Auxiliary/Auxiliary';
 import Backdrop from '../Backdrop/Backdrop';
 
@@ -11,9 +11,10 @@ export interface IModalProps {
 
 export interface IModalState { };
 
-class Modal extends Component<IModalProps, IModalState> {
-  shouldComponentUpdate(nextProps: IModalProps, nextState: IModalState) {
-    return nextProps.show !== this.props.show;
+class Modal extends Component<PropsWithChildren<IModalProps>, IModalState> {
+  shouldComponentUpdate(nextProps: PropsWithChildren<IModalProps>, nextState: IModalState) {
+    return nextProps.show !== this.props.show
+      || nextProps.children !== this.props.children;
   }
 
   componentWillUpdate() {

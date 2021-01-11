@@ -3,7 +3,7 @@ import React from 'react';
 import classes from './Button.module.css';
 
 export interface IButtonProps {
-  clicked: () => void,
+  clicked: (event: any) => void,
   btnType: keyof typeof classes
 };
 

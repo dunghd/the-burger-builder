@@ -38,6 +38,7 @@ export interface ICustomer {
 };
 
 export interface IOrder {
+  id: string,
   ingredients: IIngredient,
   price: number,
   customer: ICustomer,

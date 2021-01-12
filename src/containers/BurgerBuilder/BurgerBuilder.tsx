@@ -7,7 +7,7 @@ import Modal from '../../components/UI/Modal/Modal';
 import Auxiliary from '../../hoc/Auxiliary/Auxiliary';
 import axios from '../../axios-orders';
 import Spinner from '../../components/UI/Spinner/Spinner';
-import withErrorHandler from '../../hoc/withErrorHandl/withErrorHandler';
+import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import { RouteComponentProps } from 'react-router-dom';
 
 export interface IBurgerBuilderProps extends RouteComponentProps { };

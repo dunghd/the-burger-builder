@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, FormEvent } from 'react';
 import { IIngredient } from '../../../components/Burger/BurgerIngredient/BurgerIngredient';
 
 import Button from '../../../components/UI/Button/Button';
@@ -37,13 +37,12 @@ interface DOM_ElementOption {
 
 
 interface OrderForm {
-  name: DOM_ElementInput,
-  email: DOM_ElementInput,
-  street: DOM_ElementInput,
-  zipCode: DOM_ElementInput,
-  country: DOM_ElementInput,
-  deliveryMethod: DOM_ElementOption
-}
+  [fieldName: string]: DOM_ElementInput | DOM_ElementOption
+};
+
+export interface OrderFormData {
+  [fieldName: string]: any
+};
 
 interface ContactDataState {
   orderForm: OrderForm,
@@ -64,7 +63,7 @@ class ContactData extends Component<IContactDataProps, ContactDataState> {
           type: 'text',
           placeHolder: 'Your Name'
         },
-        value: 'DDH'
+        value: ''
       },
       email: {
         elementType: 'input',
@@ -72,7 +71,7 @@ class ContactData extends Component<IContactDataProps, ContactDataState> {
           type: 'email',
           placeHolder: 'Your E-Mail'
         },
-        value: 'test@email.com'
+        value: ''
       },
       street: {
         elementType: 'input',
@@ -80,7 +79,7 @@ class ContactData extends Component<IContactDataProps, ContactDataState> {
           type: 'text',
           placeHolder: 'Street'
         },
-        value: 'Bach Dang'
+        value: ''
       },
       zipCode: {
         elementType: 'input',
@@ -88,7 +87,7 @@ class ContactData extends Component<IContactDataProps, ContactDataState> {
           type: 'text',
           placeHolder: 'ZIP Code'
         },
-        value: '72108'
+        value: ''
       },
       country: {
         elementType: 'input',
@@ -96,7 +95,7 @@ class ContactData extends Component<IContactDataProps, ContactDataState> {
           type: 'text',
           placeHolder: 'Country'
         },
-        value: 'Vietnam'
+        value: ''
       },
       deliveryMethod: {
         elementType: 'select',
@@ -106,29 +105,46 @@ class ContactData extends Component<IContactDataProps, ContactDataState> {
             { value: 'cheapest', displayValue: 'Cheapest' }
           ]
         },
-        value: 'fastest'
+        value: ''
       }
     },
     loading: false
   } as ContactDataState;
 
-  orderHandler = (event: Event) => {
+  orderHandler = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     this.setState({ loading: true });
+    const formData = {} as OrderFormData;
+    for (let formElementIdentifier in this.state.orderForm) {
+      formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
+    }
     const order = {
+      id: undefined,
       ingredients: this.props.ingredients,
       price: this.props.price,
+      orderData: formData
     } as IOrder;
 
     axios.post('/orders.json', order)
       .then(response => {
         this.setState({ loading: false });
-        // this.props.history.push('/');
+        this.props.history.push('/');
       })
       .catch(error => {
         this.setState({ loading: false });
       });
+  };
+
+  inputChangedHandler = (event: any, inputIdentifier: string) => {
+    const updatedOrderForm = {
+      ...this.state.orderForm
+    };
+    const updatedFormElement = {
+      ...updatedOrderForm[inputIdentifier]
+    };
+    updatedFormElement.value = event.target.value;
+    updatedOrderForm[inputIdentifier] = updatedFormElement;
+    this.setState({ orderForm: updatedOrderForm });
   };
 
   render() {
@@ -136,19 +152,24 @@ class ContactData extends Component<IContactDataProps, ContactDataState> {
     for (const key in this.state.orderForm) {
       formElementArray.push({
         id: key,
-        config: this.state.orderForm[key as keyof OrderForm]
+        config: this.state.orderForm[key]
       });
     }
     let form = (
-      <form>
+      <form onSubmit={this.orderHandler}>
         {formElementArray.map(formElement => (
           <Input
             key={formElement.id}
             elementType={formElement.config.elementType}
             elementConfig={formElement.config.elementConfig}
-            value={formElement.config.value} />
+            value={formElement.config.value}
+            changed={(event: any,) => { this.inputChangedHandler(event, formElement.id) }} />
         ))}
-        <Button btnType="Success" clicked={(event: Event) => { this.orderHandler(event) }}>ORDER</Button>
+        <Button
+          btnType="Success"
+          clicked={(event: FormEvent<HTMLFormElement>) => { this.orderHandler(event) }}>
+          ORDER
+          </Button>
       </form>
     );
     if (this.state.loading) {

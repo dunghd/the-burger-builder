@@ -19,7 +19,6 @@ class Modal extends Component<PropsWithChildren<IModalProps>, IModalState> {
 
   componentWillUpdate() {
     console.log(`[Modal] WillUpdate`);
-
   }
 
   render() {

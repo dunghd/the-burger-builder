@@ -9,7 +9,7 @@ import axios from '../../axios-orders';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import { RouteComponentProps } from 'react-router-dom';
-import { OrderFormData } from '../Checkout/ContactData/ContactData';
+import { IOrderFormData } from '../Checkout/ContactData/ContactData';
 
 export interface IBurgerBuilderProps extends RouteComponentProps { };
 
@@ -26,25 +26,11 @@ export interface IIngredientPrice {
   [key: string]: number
 };
 
-export interface IAddress {
-  street: string,
-  zipCode: string,
-  country: string
-};
-
-export interface ICustomer {
-  name: string,
-  address: IAddress,
-  email: string
-};
-
 export interface IOrder {
   id: string | undefined,
   ingredients: IIngredient,
-  orderData: OrderFormData
-  price: number,
-  // customer: ICustomer,
-  // deliveryMethod: string
+  orderData: IOrderFormData
+  price: number
 };
 
 const INGREDIENT_PRICES = {

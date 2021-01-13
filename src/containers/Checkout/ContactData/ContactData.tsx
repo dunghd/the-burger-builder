@@ -9,43 +9,55 @@ import Spinner from '../../../components/UI/Spinner/Spinner';
 import { RouteComponentProps } from 'react-router-dom';
 import Input from '../../../components/UI/Input/Input';
 
-interface DOM_ElementInputConfig {
+interface I_DOM_ElementInputConfig {
   type: string,
   placeHolder: string
 };
 
-interface DOM_ElementSelectOptionConfig {
+interface I_DOM_ElementSelectOptionConfig {
   value: string,
   displayValue: string
 };
 
-interface DOM_ElementSelectConfig {
-  options: DOM_ElementSelectOptionConfig[]
+interface I_DOM_ElementSelectConfig {
+  options: I_DOM_ElementSelectOptionConfig[]
 };
 
-interface DOM_ElementInput {
+interface I_DOM_ElementInput {
   elementType: string,
-  elementConfig: DOM_ElementInputConfig,
-  value: string
+  elementConfig: I_DOM_ElementInputConfig,
+  value: string,
+  validation: IOrderFormValidation,
+  valid: boolean,
+  touched: boolean
 };
 
-interface DOM_ElementOption {
+interface I_DOM_ElementOption {
   elementType: string,
-  elementConfig: DOM_ElementSelectConfig,
-  value: string
+  elementConfig: I_DOM_ElementSelectConfig,
+  value: string,
+  validation?: IOrderFormValidation,
+  valid?: boolean,
+  touched?: boolean
 };
 
-
-interface OrderForm {
-  [fieldName: string]: DOM_ElementInput | DOM_ElementOption
+interface IOrderForm {
+  [fieldName: string]: I_DOM_ElementInput | I_DOM_ElementOption
 };
 
-export interface OrderFormData {
+export interface IOrderFormData {
   [fieldName: string]: any
 };
 
-interface ContactDataState {
-  orderForm: OrderForm,
+interface IOrderFormValidation {
+  required?: boolean,
+  minLength?: number,
+  maxLength?: number
+};
+
+interface IContactDataState {
+  orderForm: IOrderForm,
+  formIsValid: boolean,
   loading: boolean
 };
 
@@ -54,7 +66,7 @@ export interface IContactDataProps extends RouteComponentProps {
   price: number
 };
 
-class ContactData extends Component<IContactDataProps, ContactDataState> {
+class ContactData extends Component<IContactDataProps, IContactDataState> {
   state = {
     orderForm: {
       name: {
@@ -63,7 +75,12 @@ class ContactData extends Component<IContactDataProps, ContactDataState> {
           type: 'text',
           placeHolder: 'Your Name'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false,
+        touched: false
       },
       email: {
         elementType: 'input',
@@ -71,7 +88,12 @@ class ContactData extends Component<IContactDataProps, ContactDataState> {
           type: 'email',
           placeHolder: 'Your E-Mail'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false,
+        touched: false
       },
       street: {
         elementType: 'input',
@@ -79,7 +101,12 @@ class ContactData extends Component<IContactDataProps, ContactDataState> {
           type: 'text',
           placeHolder: 'Street'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false,
+        touched: false
       },
       zipCode: {
         elementType: 'input',
@@ -87,7 +114,14 @@ class ContactData extends Component<IContactDataProps, ContactDataState> {
           type: 'text',
           placeHolder: 'ZIP Code'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true,
+          minLength: 5,
+          maxLength: 5
+        },
+        valid: false,
+        touched: false
       },
       country: {
         elementType: 'input',
@@ -95,7 +129,12 @@ class ContactData extends Component<IContactDataProps, ContactDataState> {
           type: 'text',
           placeHolder: 'Country'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false,
+        touched: false
       },
       deliveryMethod: {
         elementType: 'select',
@@ -108,13 +147,14 @@ class ContactData extends Component<IContactDataProps, ContactDataState> {
         value: ''
       }
     },
+    formIsValid: false,
     loading: false
-  } as ContactDataState;
+  } as IContactDataState;
 
   orderHandler = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     this.setState({ loading: true });
-    const formData = {} as OrderFormData;
+    const formData = {} as IOrderFormData;
     for (let formElementIdentifier in this.state.orderForm) {
       formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
     }
@@ -135,6 +175,24 @@ class ContactData extends Component<IContactDataProps, ContactDataState> {
       });
   };
 
+  checkValidity = (value: string, rules?: IOrderFormValidation): boolean => {
+    let isValid = true;
+
+    if (rules?.required) {
+      isValid = value.trim() !== '' && isValid;
+    }
+
+    if (rules?.minLength) {
+      isValid = value.length >= rules.minLength && isValid;
+    }
+
+    if (rules?.maxLength) {
+      isValid = value.length <= rules.maxLength && isValid;
+    }
+
+    return isValid;
+  };
+
   inputChangedHandler = (event: any, inputIdentifier: string) => {
     const updatedOrderForm = {
       ...this.state.orderForm
@@ -143,7 +201,15 @@ class ContactData extends Component<IContactDataProps, ContactDataState> {
       ...updatedOrderForm[inputIdentifier]
     };
     updatedFormElement.value = event.target.value;
+    updatedFormElement.valid =
+      this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
+    updatedFormElement.touched = true;
     updatedOrderForm[inputIdentifier] = updatedFormElement;
+
+    let formIsValid = false;
+    for (let inputIdentifiers in updatedOrderForm) {
+      formIsValid = Boolean(updatedOrderForm[inputIdentifiers].valid);
+    }
     this.setState({ orderForm: updatedOrderForm });
   };
 
@@ -163,6 +229,9 @@ class ContactData extends Component<IContactDataProps, ContactDataState> {
             elementType={formElement.config.elementType}
             elementConfig={formElement.config.elementConfig}
             value={formElement.config.value}
+            invalid={!formElement.config.valid}
+            shouldValidate={formElement.config.validation}
+            touched={formElement.config.touched}
             changed={(event: any,) => { this.inputChangedHandler(event, formElement.id) }} />
         ))}
         <Button

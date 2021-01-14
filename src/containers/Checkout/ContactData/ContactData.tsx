@@ -144,7 +144,9 @@ class ContactData extends Component<IContactDataProps, IContactDataState> {
             { value: 'cheapest', displayValue: 'Cheapest' }
           ]
         },
-        value: ''
+        value: 'fastest',
+        validation: {},
+        valid: true
       }
     },
     formIsValid: false,
@@ -206,11 +208,11 @@ class ContactData extends Component<IContactDataProps, IContactDataState> {
     updatedFormElement.touched = true;
     updatedOrderForm[inputIdentifier] = updatedFormElement;
 
-    let formIsValid = false;
+    let formIsValid = true;
     for (let inputIdentifiers in updatedOrderForm) {
-      formIsValid = Boolean(updatedOrderForm[inputIdentifiers].valid);
+      formIsValid = Boolean(updatedOrderForm[inputIdentifiers].valid) && formIsValid;
     }
-    this.setState({ orderForm: updatedOrderForm });
+    this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid });
   };
 
   render() {
@@ -236,7 +238,8 @@ class ContactData extends Component<IContactDataProps, IContactDataState> {
         ))}
         <Button
           btnType="Success"
-          clicked={(event: FormEvent<HTMLFormElement>) => { this.orderHandler(event) }}>
+          clicked={(event: FormEvent<HTMLFormElement>) => { this.orderHandler(event) }}
+          disabled={!this.state.formIsValid}>
           ORDER
           </Button>
       </form>

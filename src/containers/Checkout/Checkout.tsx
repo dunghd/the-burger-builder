@@ -1,37 +1,20 @@
 import React, { Component } from 'react';
 import { Route, RouteComponentProps } from 'react-router-dom';
-import { IIngredient } from '../../components/Burger/BurgerIngredient/BurgerIngredient';
+import { connect } from 'react-redux';
+
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
 import ContactData from './ContactData/ContactData';
+import { IBurgerReducerState } from '../../store/reducer';
+import { IIngredient } from '../../components/Burger/BurgerIngredient/BurgerIngredient';
 
-export interface ICheckoutProps extends RouteComponentProps { };
-
-type CheckoutState = {
+export interface ICheckoutProps extends RouteComponentProps {
   ingredients: IIngredient,
   totalPrice: number
 };
 
+type CheckoutState = {};
+
 class Checkout extends Component<ICheckoutProps, CheckoutState> {
-  state = {
-    ingredients: {} as IIngredient,
-    totalPrice: 0
-  } as CheckoutState;
-
-  componentWillMount() {
-    const query = new URLSearchParams(this.props.location.search);
-    const ingredients: IIngredient = {};
-    let price = 0;
-    for (let param of query.entries()) {
-      if (param[0] === 'price') {
-        price = +param[1];
-      } else {
-        ingredients[param[0]] = +param[1];
-      }
-
-    }
-    this.setState({ ingredients: ingredients, totalPrice: price });
-  };
-
   checkoutCancelledHandler = () => {
     this.props.history.goBack();
   };
@@ -44,18 +27,21 @@ class Checkout extends Component<ICheckoutProps, CheckoutState> {
     return (
       <div>
         <CheckoutSummary
-          ingredients={this.state.ingredients}
+          ingredients={this.props.ingredients}
           checkoutCancelled={this.checkoutCancelledHandler}
           checkoutContinue={this.checkoutContinueHandler} />
         <Route
           path={`${this.props.match.path}/contact-data`}
-          render={(props: RouteComponentProps) => (<ContactData
-            ingredients={this.state.ingredients}
-            price={this.state.totalPrice}
-            {...props} />)} />
+          component={ContactData} />
       </div>
     );
   };
 }
 
-export default Checkout;
+const mapStateToProps = (state: any) => {
+  return {
+    ingredients: state.ingredients
+  } as IBurgerReducerState;
+};
+
+export default connect(mapStateToProps)(Checkout);

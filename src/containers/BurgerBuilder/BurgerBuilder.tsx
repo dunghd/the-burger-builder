@@ -39,9 +39,6 @@ export interface IOrder {
 
 class BurgerBuilder extends Component<IBurgerBuilderProps, IBurgerBuilderState> {
   state = {
-    // ingredients: {} as IIngredient,
-    // totalPrice: 4,
-    purchasable: false,
     purchasing: false,
     loading: false,
     isError: false
@@ -57,7 +54,7 @@ class BurgerBuilder extends Component<IBurgerBuilderProps, IBurgerBuilderState> 
     //   });
   }
 
-  updatePurchaseState(ingredients: IIngredient) {
+  updatePurchaseState(ingredients: IIngredient): boolean {
     const sum = Object.keys(ingredients)
       .map(igKey => {
         return ingredients[igKey];
@@ -65,43 +62,9 @@ class BurgerBuilder extends Component<IBurgerBuilderProps, IBurgerBuilderState> 
       .reduce((sum, el) => {
         return +sum + +el;
       }, 0);
-    this.setState({ purchasable: sum > 0 });
+
+    return sum > 0;
   }
-
-  // addIngredientHandler = (type: string) => {
-  //   const oldCount = this.state.ingredients[type];
-  //   const updatedCounted = +oldCount + 1;
-  //   const updatedIngredients = {
-  //     ...this.state.ingredients
-  //   };
-
-  //   updatedIngredients[type] = updatedCounted;
-  //   const priceAddition = INGREDIENT_PRICES[type];
-  //   const oldPrice = this.state.totalPrice;
-  //   const newPrice = oldPrice + priceAddition;
-  //   this.setState({ totalPrice: newPrice, ingredients: updatedIngredients });
-  //   this.updatePurchaseState(updatedIngredients);
-  // };
-
-  // removeIngredientHandler = (type: string) => {
-  //   const oldCount = this.state.ingredients[type];
-
-  //   if (oldCount <= 0) {
-  //     return;
-  //   }
-
-  //   const updatedCounted = +oldCount - 1;
-  //   const updatedIngredients = {
-  //     ...this.state.ingredients
-  //   };
-
-  //   updatedIngredients[type] = updatedCounted;
-  //   const priceDeduction = INGREDIENT_PRICES[type];
-  //   const oldPrice = this.state.totalPrice;
-  //   const newPrice = oldPrice - priceDeduction;
-  //   this.setState({ totalPrice: newPrice, ingredients: updatedIngredients });
-  //   this.updatePurchaseState(updatedIngredients);
-  // };
 
   purchaseHandler = () => {
     this.setState({ purchasing: true });
@@ -112,18 +75,7 @@ class BurgerBuilder extends Component<IBurgerBuilderProps, IBurgerBuilderState> 
   }
 
   purchaseContinueHandler = () => {
-    const queryParams = [];
-    for (let i in this.state.ingredients) {
-      queryParams.push(
-        encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]));
-    }
-    queryParams.push(`price=${this.state.totalPrice}`);
-    const queryString = queryParams.join('&');
-
-    this.props.history.push({
-      pathname: '/checkout',
-      search: '?' + queryString
-    });
+    this.props.history.push('/checkout');
   };
 
   render() {
@@ -146,7 +98,7 @@ class BurgerBuilder extends Component<IBurgerBuilderProps, IBurgerBuilderState> 
             ingredientAdded={this.props.onIngredientAdded}
             ingredientRemoved={this.props.onIngredientRemoved}
             disabled={disabledInfo}
-            purchasable={this.state.purchasable}
+            purchasable={this.updatePurchaseState(this.props.ingredients)}
             price={this.props.totalPrice}
             ordered={this.purchaseHandler} />
         </Auxiliary>

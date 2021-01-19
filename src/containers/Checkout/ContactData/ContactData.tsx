@@ -1,5 +1,6 @@
 import React, { Component, FormEvent } from 'react';
 import { IIngredient } from '../../../components/Burger/BurgerIngredient/BurgerIngredient';
+import { connect } from 'react-redux';
 
 import Button from '../../../components/UI/Button/Button';
 import { IOrder } from '../../BurgerBuilder/BurgerBuilder';
@@ -8,6 +9,7 @@ import axios from '../../../axios-orders';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import { RouteComponentProps } from 'react-router-dom';
 import Input from '../../../components/UI/Input/Input';
+import { IBurgerReducerState } from '../../../store/reducer';
 
 interface I_DOM_ElementInputConfig {
   type: string,
@@ -256,4 +258,11 @@ class ContactData extends Component<IContactDataProps, IContactDataState> {
   };
 }
 
-export default ContactData;
+const mapStateToProps = (state: any) => {
+  return {
+    ingredients: state.ingredients,
+    totalPrice: state.totalPrice
+  } as IBurgerReducerState;
+};
+
+export default connect(mapStateToProps)(ContactData);

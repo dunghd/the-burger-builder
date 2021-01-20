@@ -12,22 +12,25 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import { RouteComponentProps } from 'react-router-dom';
 import { IOrderFormData } from '../Checkout/ContactData/ContactData';
-import { addIngredientsAction, IBurgerReducerAction, IBurgerReducerState, removeIngredientsAction } from '../../store/reducer';
+import { IBurgerReducerState } from '../../store/reducers/burgerBuilder';
+import * as burgerBuilderActions from '../../store/actions';
 
 export interface IBurgerBuilderProps extends RouteComponentProps {
   ingredients: IIngredient,
   totalPrice: number,
+  isError: boolean,
   onIngredientAdded: (ingName: string) => void,
   onIngredientRemoved: (ingName: string) => void,
+  onInitIngredients: () => IIngredient
 };
 
 export interface IBurgerBuilderState {
-  ingredients: IIngredient,
-  totalPrice: number,
-  purchasable: boolean,
+  // ingredients: IIngredient,
+  // totalPrice: number,
+  // purchasable: boolean,
   purchasing: boolean,
-  loading: boolean,
-  isError: boolean
+  // loading: boolean,
+  // isError: boolean
 };
 
 export interface IOrder {
@@ -40,18 +43,12 @@ export interface IOrder {
 class BurgerBuilder extends Component<IBurgerBuilderProps, IBurgerBuilderState> {
   state = {
     purchasing: false,
-    loading: false,
-    isError: false
+    // loading: false,
+    // isError: false
   } as IBurgerBuilderState;
 
   componentDidMount() {
-    // axios.get('https://react-my-burger-c95b7-default-rtdb.firebaseio.com/ingredients.json')
-    //   .then(response => {
-    //     this.setState({ ingredients: response.data });
-    //   })
-    //   .catch((error) => {
-    //     this.setState({ isError: true })
-    //   });
+    this.props.onInitIngredients();
   }
 
   updatePurchaseState(ingredients: IIngredient): boolean {
@@ -88,7 +85,7 @@ class BurgerBuilder extends Component<IBurgerBuilderProps, IBurgerBuilderState> 
     }
 
     let orderSummary = null;
-    let burger = this.state.isError ? <p>Ingredients can't be loaded!</p> : <Spinner />;
+    let burger = this.props.isError ? <p>Ingredients can't be loaded!</p> : <Spinner />;
 
     if (Object.keys(this.props.ingredients).length > 0) {
       burger = (
@@ -111,9 +108,9 @@ class BurgerBuilder extends Component<IBurgerBuilderProps, IBurgerBuilderState> 
         price={this.props.totalPrice} />;
     }
 
-    if (this.state.loading) {
-      orderSummary = <Spinner />
-    }
+    // if (this.state.loading) {
+    //   orderSummary = <Spinner />
+    // }
 
     return (
       <Auxiliary>
@@ -131,18 +128,16 @@ class BurgerBuilder extends Component<IBurgerBuilderProps, IBurgerBuilderState> 
 const mapStateToProps = (state: any) => {
   return {
     ingredients: state.ingredients,
-    totalPrice: state.totalPrice
+    totalPrice: state.totalPrice,
+    error: state.error
   } as IBurgerReducerState;
 };
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    onIngredientAdded: (ingName: string) => dispatch(
-      addIngredientsAction({ ingredientName: ingName } as IBurgerReducerAction)
-    ),
-    onIngredientRemoved: (ingName: string) => dispatch(
-      removeIngredientsAction({ ingredientName: ingName } as IBurgerReducerAction)
-    )
+    onIngredientAdded: (ingName: string) => dispatch(burgerBuilderActions.addIngredient(ingName)),
+    onIngredientRemoved: (ingName: string) => dispatch(burgerBuilderActions.removeIngredient(ingName)),
+    onInitIngredients: () => dispatch(burgerBuilderActions.initIngredients)
   };
 };
 

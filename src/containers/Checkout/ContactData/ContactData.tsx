@@ -9,7 +9,7 @@ import axios from '../../../axios-orders';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import { RouteComponentProps } from 'react-router-dom';
 import Input from '../../../components/UI/Input/Input';
-import { IBurgerReducerState } from '../../../store/reducer';
+import { IBurgerReducerState } from '../../../store/reducers/burgerBuilder';
 
 interface I_DOM_ElementInputConfig {
   type: string,

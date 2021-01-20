@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
 import ContactData from './ContactData/ContactData';
-import { IBurgerReducerState } from '../../store/reducer';
+import { IBurgerReducerState } from '../../store/reducers/burgerBuilder';
 import { IIngredient } from '../../components/Burger/BurgerIngredient/BurgerIngredient';
 
 export interface ICheckoutProps extends RouteComponentProps {

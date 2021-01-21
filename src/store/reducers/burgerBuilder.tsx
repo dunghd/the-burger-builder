@@ -3,7 +3,7 @@ import { Action, isType } from '../actions/actionTypes';
 import { addIngredientsAction, fetchIngredientsFailedAction, removeIngredientsAction, setIngredientsAction } from '../actions/burgerBuilder';
 
 export interface IBurgerReducerState {
-  ingredients: IIngredient | undefined,
+  ingredients: IIngredient,
   totalPrice: number,
   error: boolean
 };
@@ -13,7 +13,7 @@ export interface IBurgerReducerAction {
 };
 
 const initialState = {
-  ingredients: undefined,
+  ingredients: {} as IIngredient,
   totalPrice: 4,
   error: false
 } as IBurgerReducerState;
@@ -54,7 +54,7 @@ const reducer = (state: any = initialState, action: Action<IBurgerReducerState>)
   else if (isType(action, setIngredientsAction)) {
     return {
       ...state,
-      ingredients: action.payload.ingredients,
+      ingredients: action.payload,
       error: false
     } as IBurgerReducerState;
   }

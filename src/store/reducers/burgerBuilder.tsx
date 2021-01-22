@@ -5,7 +5,8 @@ import { addIngredientsAction, fetchIngredientsFailedAction, removeIngredientsAc
 export interface IBurgerReducerState {
   ingredients: IIngredient,
   totalPrice: number,
-  error: boolean
+  error: boolean,
+  loading: boolean
 };
 
 export interface IBurgerReducerAction {
@@ -54,7 +55,12 @@ const reducer = (state: any = initialState, action: Action<IBurgerReducerState>)
   else if (isType(action, setIngredientsAction)) {
     return {
       ...state,
-      ingredients: action.payload,
+      ingredients: {
+        salad: action.payload.salad,
+        bacon: action.payload.bacon,
+        cheese: action.payload.cheese,
+        meat: action.payload.meat,
+      } as IIngredient,
       error: false
     } as IBurgerReducerState;
   }

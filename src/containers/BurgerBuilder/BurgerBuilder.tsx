@@ -25,12 +25,7 @@ export interface IBurgerBuilderProps extends RouteComponentProps {
 };
 
 export interface IBurgerBuilderState {
-  // ingredients: IIngredient,
-  // totalPrice: number,
-  // purchasable: boolean,
-  purchasing: boolean,
-  // loading: boolean,
-  // isError: boolean
+  purchasing: boolean
 };
 
 export interface IOrder {
@@ -42,9 +37,7 @@ export interface IOrder {
 
 class BurgerBuilder extends Component<IBurgerBuilderProps, IBurgerBuilderState> {
   state = {
-    purchasing: false,
-    // loading: false,
-    // isError: false
+    purchasing: false
   } as IBurgerBuilderState;
 
   componentDidMount() {
@@ -108,10 +101,6 @@ class BurgerBuilder extends Component<IBurgerBuilderProps, IBurgerBuilderState> 
         price={this.props.totalPrice} />;
     }
 
-    // if (this.state.loading) {
-    //   orderSummary = <Spinner />
-    // }
-
     return (
       <Auxiliary>
         <Modal
@@ -127,9 +116,9 @@ class BurgerBuilder extends Component<IBurgerBuilderProps, IBurgerBuilderState> 
 
 const mapStateToProps = (state: any) => {
   return {
-    ingredients: state.ingredients,
-    totalPrice: state.totalPrice,
-    error: state.error
+    ingredients: state.burgerBuilder.ingredients,
+    totalPrice: state.burgerBuilder.totalPrice,
+    error: state.burgerBuilder.error
   } as IBurgerReducerState;
 };
 

@@ -61,14 +61,13 @@ interface IOrderFormValidation {
 
 interface IContactDataState {
   orderForm: IOrderForm,
-  formIsValid: boolean,
-  // loading: boolean
+  formIsValid: boolean
 };
 
 export interface IContactDataProps extends RouteComponentProps {
   ingredients: IIngredient,
   price: number,
-  onOrderBuilder: (orderData: IOrder) => void,
+  onOrderBuilder: (orderData: IOrder) => any,
   loading: boolean
 };
 
@@ -155,8 +154,7 @@ class ContactData extends Component<IContactDataProps, IContactDataState> {
         valid: true
       }
     },
-    formIsValid: false,
-    // loading: false
+    formIsValid: false
   } as IContactDataState;
 
   orderHandler = (event: FormEvent<HTMLFormElement>) => {

@@ -15,7 +15,9 @@ export interface IOrder {
 
 export interface IPurchaseBurgerSuccessAction {
   id: string,
-  orderData: any
+  orderData: any,
+  loading: boolean,
+  purchased: boolean
 };
 
 export interface IPurchaseBurgerFailAction {
@@ -52,10 +54,18 @@ export const purchaseBurger = (orderData: IOrder) => {
     dispatch(purchaseBurgerStart());
     axios.post('/orders.json', orderData)
       .then(response => {
-        dispatch(purchaseBurgerSuccess(response.data, orderData));
+        dispatch(purchaseBurgerSuccess(response.data.name, orderData));
       })
       .catch(error => {
-        dispatch(purchaseBurgerFail);
+        dispatch(purchaseBurgerFail(error));
       });
   };
+};
+
+export const purchaseInitAction =
+  actionTypes.actionCreator(actionTypes.PURCHASE_BURGER_INIT);
+
+export const purchaseInit = () => {
+  debugger;
+  return purchaseInitAction;
 };

@@ -13,7 +13,7 @@ import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import { RouteComponentProps } from 'react-router-dom';
 import { IOrderFormData } from '../Checkout/ContactData/ContactData';
 import { IBurgerReducerState } from '../../store/reducers/burgerBuilder';
-import * as burgerBuilderActions from '../../store/actions';
+import * as actions from '../../store/actions';
 
 export interface IBurgerBuilderProps extends RouteComponentProps {
   ingredients: IIngredient,
@@ -21,7 +21,8 @@ export interface IBurgerBuilderProps extends RouteComponentProps {
   isError: boolean,
   onIngredientAdded: (ingName: string) => void,
   onIngredientRemoved: (ingName: string) => void,
-  onInitIngredients: () => IIngredient
+  onInitIngredients: () => IIngredient,
+  onInitPurchase: () => void
 };
 
 export interface IBurgerBuilderState {
@@ -65,6 +66,8 @@ class BurgerBuilder extends Component<IBurgerBuilderProps, IBurgerBuilderState> 
   }
 
   purchaseContinueHandler = () => {
+    debugger;
+    this.props.onInitPurchase();
     this.props.history.push('/checkout');
   };
 
@@ -124,9 +127,13 @@ const mapStateToProps = (state: any) => {
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    onIngredientAdded: (ingName: string) => dispatch(burgerBuilderActions.addIngredient(ingName)),
-    onIngredientRemoved: (ingName: string) => dispatch(burgerBuilderActions.removeIngredient(ingName)),
-    onInitIngredients: () => dispatch(burgerBuilderActions.initIngredients())
+    onIngredientAdded: (ingName: string) => dispatch(actions.addIngredient(ingName)),
+    onIngredientRemoved: (ingName: string) => dispatch(actions.removeIngredient(ingName)),
+    onInitIngredients: () => dispatch(actions.initIngredients()),
+    onInitPurchase: () => dispatch(() => {
+      debugger;
+      actions.purchaseInit();
+    })
   };
 };
 

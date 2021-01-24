@@ -1,6 +1,7 @@
 import { IIngredient } from '../../components/Burger/BurgerIngredient/BurgerIngredient';
 import { Action, isType } from '../actions/actionTypes';
 import { addIngredientsAction, fetchIngredientsFailedAction, removeIngredientsAction, setIngredientsAction } from '../actions/burgerBuilder';
+import { updateObject } from '../utility';
 
 export interface IBurgerReducerState {
   ingredients: IIngredient,
@@ -33,28 +34,29 @@ const INGREDIENT_PRICES = {
 
 const reducer = (state: any = initialState, action: Action<IBurgerReducerState>): IBurgerReducerState => {
   if (isType(action, addIngredientsAction)) {
-    return {
-      ...state,
-      ingredients: {
-        ...state.ingredients,
-        [action.payload.ingredientName]: state.ingredients[action.payload.ingredientName] + 1
-      },
+    const updatedIngredient = {
+      [action.payload.ingredientName]: state.ingredients[action.payload.ingredientName] + 1
+    };
+    const updatedIngredients = updateObject(state.ingredients, updatedIngredient);
+    const updateState = {
+      ingredients: updatedIngredients,
       totalPrice: state.totalPrice + INGREDIENT_PRICES[action.payload.ingredientName]
     } as IBurgerReducerState;
+    return updateObject(state, updateState);
   }
   else if (isType(action, removeIngredientsAction)) {
-    return {
-      ...state,
-      ingredients: {
-        ...state.ingredients,
-        [action.payload.ingredientName]: state.ingredients[action.payload.ingredientName] - 1
-      },
-      totalPrice: state.totalPrice - INGREDIENT_PRICES[action.payload.ingredientName]
+    const updatedIngredient = {
+      [action.payload.ingredientName]: state.ingredients[action.payload.ingredientName] - 1
+    };
+    const updatedIngredients = updateObject(state.ingredients, updatedIngredient);
+    const updateState = {
+      ingredients: updatedIngredients,
+      totalPrice: state.totalPrice + INGREDIENT_PRICES[action.payload.ingredientName]
     } as IBurgerReducerState;
+    return updateObject(state, updateState);
   }
   else if (isType(action, setIngredientsAction)) {
-    return {
-      ...state,
+    return updateObject(state, {
       ingredients: {
         salad: action.payload.salad,
         bacon: action.payload.bacon,
@@ -63,13 +65,12 @@ const reducer = (state: any = initialState, action: Action<IBurgerReducerState>)
       } as IIngredient,
       error: false,
       totalPrice: 4
-    } as IBurgerReducerState;
+    } as IBurgerReducerState);
   }
   else if (isType(action, fetchIngredientsFailedAction)) {
-    return {
-      ...state,
+    return updateObject(state, {
       error: true
-    } as IBurgerReducerState;
+    }) as IBurgerReducerState;
   }
   else {
     return state;

@@ -22,6 +22,7 @@ export interface IPurchaseBurgerSuccessAction {
 };
 
 export interface IPurchaseBurgerFailAction {
+  loading: boolean,
   error: any
 };
 
@@ -38,6 +39,7 @@ export interface IFetchOrdersSuccessAction {
 };
 
 export interface IFetchOrdersFailAction {
+  loading: boolean,
   error: Error
 };
 
@@ -56,7 +58,10 @@ export const purchaseBurgerFailAction =
   actionTypes.actionCreator<IPurchaseBurgerFailAction>(actionTypes.PURCHASE_BURGER_FAILED_ACTION_TYPE);
 
 export const purchaseBurgerFail = (error: any) => {
-  return purchaseBurgerFailAction({ error: error } as IPurchaseBurgerFailAction);
+  return purchaseBurgerFailAction({
+    error: error,
+    loading: false
+  } as IPurchaseBurgerFailAction);
 };
 
 export const purchaseBurgerStartAction =
@@ -97,7 +102,10 @@ export const fetchOrdersFailAction =
   actionTypes.actionCreator<IFetchOrdersFailAction>(actionTypes.FETCH_ORDER_FAIL_ACTION_TYPE);
 
 export const fetchOrdersFail = (error: Error) => {
-  return fetchOrdersFailAction({ error: error } as IFetchOrdersFailAction);
+  return fetchOrdersFailAction({
+    error: error,
+    loading: false
+  } as IFetchOrdersFailAction);
 };
 
 export const fetchOrdersStartAction =

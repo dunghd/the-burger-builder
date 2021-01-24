@@ -28,6 +28,10 @@ export interface IPurchaseBurgerStartAction {
   loading: boolean
 };
 
+export interface IPurchaseInitAction {
+  purchased: boolean
+};
+
 export const purchaseBurgerSuccessAction =
   actionTypes.actionCreator<IPurchaseBurgerSuccessAction>(actionTypes.PURCHASE_BURGER_SUCCESS_ACTION_TYPE);
 
@@ -63,9 +67,8 @@ export const purchaseBurger = (orderData: IOrder) => {
 };
 
 export const purchaseInitAction =
-  actionTypes.actionCreator(actionTypes.PURCHASE_BURGER_INIT);
+  actionTypes.actionCreator<IPurchaseInitAction>(actionTypes.PURCHASE_BURGER_INIT_ACTION_TYPE);
 
 export const purchaseInit = () => {
-  debugger;
-  return purchaseInitAction;
+  return purchaseInitAction({ purchased: false } as IPurchaseInitAction);
 };

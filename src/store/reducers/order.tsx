@@ -30,7 +30,7 @@ const reducer = (state: any = initialState, action: Action<IOrderReducerState>):
   else if (isType(action, purchaseInitAction)) {
     return {
       ...state,
-      purchased: false
+      purchased: action.payload.purchased
     } as IOrderReducerState;
   }
   else if (isType(action, purchaseBurgerStartAction)) {

@@ -66,7 +66,7 @@ interface IContactDataState {
 
 export interface IContactDataProps extends RouteComponentProps {
   ingredients: IIngredient,
-  price: number,
+  totalPrice: number,
   onOrderBuilder: (orderData: IOrder) => any,
   loading: boolean
 };
@@ -166,7 +166,7 @@ class ContactData extends Component<IContactDataProps, IContactDataState> {
     const orderData = {
       id: undefined,
       ingredients: this.props.ingredients,
-      price: this.props.price,
+      price: this.props.totalPrice,
       orderData: formData
     } as IOrder;
 

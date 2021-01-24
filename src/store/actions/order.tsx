@@ -1,6 +1,7 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios-orders';
 import { IIngredient } from '../../components/Burger/BurgerIngredient/BurgerIngredient';
+import { IOrderReducerState } from '../reducers/order';
 
 export interface IOrderFormData {
   [fieldName: string]: any
@@ -28,8 +29,20 @@ export interface IPurchaseBurgerStartAction {
   loading: boolean
 };
 
-export interface IPurchaseInitAction {
+export interface IPurchaseInitAction extends IOrderReducerState {
   purchased: boolean
+};
+
+export interface IFetchOrdersSuccessAction {
+  orders: IOrder[]
+};
+
+export interface IFetchOrdersFailAction {
+  error: Error
+};
+
+export interface IFetchOrdersStartAction extends IOrderReducerState {
+  loading: boolean
 };
 
 export const purchaseBurgerSuccessAction =
@@ -71,4 +84,45 @@ export const purchaseInitAction =
 
 export const purchaseInit = () => {
   return purchaseInitAction({ purchased: false } as IPurchaseInitAction);
+};
+
+export const fetchOrdersSuccessAction =
+  actionTypes.actionCreator<IFetchOrdersSuccessAction>(actionTypes.FETCH_ORDERS_SUCCESS_ACTION_TYPE)
+
+export const fetchOrdersSuccess = (orders: IOrder[]) => {
+  return fetchOrdersSuccessAction({ orders: orders } as IFetchOrdersSuccessAction);
+};
+
+export const fetchOrdersFailAction =
+  actionTypes.actionCreator<IFetchOrdersFailAction>(actionTypes.FETCH_ORDER_FAIL_ACTION_TYPE);
+
+export const fetchOrdersFail = (error: Error) => {
+  return fetchOrdersFailAction({ error: error } as IFetchOrdersFailAction);
+};
+
+export const fetchOrdersStartAction =
+  actionTypes.actionCreator<IFetchOrdersStartAction>(actionTypes.FETCH_ORDERS_START_ACTION_TYPE);
+
+export const fetchOrdersStart = () => {
+  return fetchOrdersStartAction({ loading: true } as IFetchOrdersStartAction);
+};
+
+export const fetchOrders = () => {
+  return (dispatch: any) => {
+    dispatch(fetchOrdersStart);
+    axios.get('/orders.json')
+      .then(res => {
+        const fetchedOrders = [];
+        for (const key in res.data) {
+          fetchedOrders.push({
+            ...res.data[key],
+            id: key
+          });
+        }
+        dispatch(fetchOrdersSuccess(fetchedOrders));
+      })
+      .catch(err => {
+        dispatch(fetchOrdersFail(err));
+      });
+  };
 };

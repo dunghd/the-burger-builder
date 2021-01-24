@@ -61,7 +61,8 @@ const reducer = (state: any = initialState, action: Action<IBurgerReducerState>)
         cheese: action.payload.cheese,
         meat: action.payload.meat,
       } as IIngredient,
-      error: false
+      error: false,
+      totalPrice: 4
     } as IBurgerReducerState;
   }
   else if (isType(action, fetchIngredientsFailedAction)) {

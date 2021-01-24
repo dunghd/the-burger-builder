@@ -1,6 +1,14 @@
 import { IOrder } from '../../containers/BurgerBuilder/BurgerBuilder';
 import { Action, isType } from '../actions/actionTypes';
-import { purchaseBurgerFailAction, purchaseBurgerStartAction, purchaseBurgerSuccessAction, purchaseInitAction } from '../actions/order';
+import {
+  fetchOrdersFailAction
+  , fetchOrdersStartAction
+  , fetchOrdersSuccessAction
+  , purchaseBurgerFailAction
+  , purchaseBurgerStartAction
+  , purchaseBurgerSuccessAction
+  , purchaseInitAction
+} from '../actions/order';
 
 export interface IOrderReducerState {
   orders: IOrder[],
@@ -14,7 +22,7 @@ const initialState = {
   purchased: false
 } as IOrderReducerState;
 
-const reducer = (state: any = initialState, action: Action<IOrderReducerState>): IOrderReducerState => {
+const reducer = (state: any = initialState, action: Action<any>): IOrderReducerState => {
   if (isType(action, purchaseBurgerSuccessAction)) {
     const newOrder = {
       ...action.payload.orderData,
@@ -31,6 +39,25 @@ const reducer = (state: any = initialState, action: Action<IOrderReducerState>):
     return {
       ...state,
       purchased: action.payload.purchased
+    } as IOrderReducerState;
+  }
+  else if (isType(action, fetchOrdersStartAction)) {
+    return {
+      ...state,
+      loading: action.payload.loading
+    } as IOrderReducerState;
+  }
+  else if (isType(action, fetchOrdersSuccessAction)) {
+    return {
+      ...state,
+      orders: action.payload.orders
+    } as IOrderReducerState;
+  }
+  else if (isType(action, fetchOrdersFailAction)) {
+    return {
+      ...state,
+      loading: false,
+      error: action.payload.error
     } as IOrderReducerState;
   }
   else if (isType(action, purchaseBurgerStartAction)) {

@@ -12,6 +12,10 @@ export const FETCH_ORDERS_START_ACTION_TYPE = 'FETCH_ORDERS_START_ACTION_TYPE';
 export const FETCH_ORDERS_SUCCESS_ACTION_TYPE = 'FETCH_ORDERS_SUCCESS_ACTION_TYPE';
 export const FETCH_ORDER_FAIL_ACTION_TYPE = 'FETCH_ORDER_FAIL_ACTION_TYPE';
 
+export const AUTH_START = 'AUTH_START';
+export const AUTH_SUCCESS = 'AUTH_SUCCESS';
+export const AUTH_FAIL = 'AUTH_FAIL';
+
 export type Action<TPayload> = {
   type: string;
   payload: TPayload;

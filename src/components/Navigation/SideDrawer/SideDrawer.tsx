@@ -8,7 +8,8 @@ import classes from './SideDrawer.module.scss';
 
 export interface ISideDrawerProps {
   closed: () => void,
-  open: boolean
+  open: boolean,
+  isAuth: boolean
 };
 
 const sideDrawer = (props: React.PropsWithChildren<ISideDrawerProps>) => {
@@ -25,7 +26,7 @@ const sideDrawer = (props: React.PropsWithChildren<ISideDrawerProps>) => {
           <Logo />
         </div>
         <nav>
-          <NavigationItems />
+          <NavigationItems isAuthenticated={props.isAuth} />
         </nav>
       </div>
     </Auxiliary>

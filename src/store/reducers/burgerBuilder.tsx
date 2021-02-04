@@ -7,7 +7,8 @@ export interface IBurgerReducerState {
   ingredients: IIngredient,
   totalPrice: number,
   error: boolean,
-  loading: boolean
+  loading: boolean,
+  token: string
 };
 
 export interface IBurgerReducerAction {

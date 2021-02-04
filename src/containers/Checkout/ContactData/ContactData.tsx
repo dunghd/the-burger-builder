@@ -69,8 +69,9 @@ interface IContactDataState {
 export interface IContactDataProps extends RouteComponentProps {
   ingredients: IIngredient,
   totalPrice: number,
-  onOrderBuilder: (orderData: IOrder) => any,
-  loading: boolean
+  onOrderBuilder: (orderData: IOrder, token: string) => any,
+  loading: boolean,
+  token: string
 };
 
 class ContactData extends Component<IContactDataProps, IContactDataState> {
@@ -172,7 +173,7 @@ class ContactData extends Component<IContactDataProps, IContactDataState> {
       orderData: formData
     } as IOrder;
 
-    this.props.onOrderBuilder(orderData);
+    this.props.onOrderBuilder(orderData, this.props.token);
   };
 
   checkValidity = (value: string, rules?: IOrderFormValidation): boolean => {
@@ -271,13 +272,14 @@ const mapStateToProps = (state: any) => {
   return {
     ingredients: state.burgerBuilder.ingredients,
     totalPrice: state.burgerBuilder.totalPrice,
-    loading: state.order.loading
+    loading: state.order.loading,
+    token: state.auth.idToken
   } as IBurgerReducerState;
 };
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    onOrderBuilder: (orderData: IOrder) => dispatch(actions.purchaseBurger(orderData))
+    onOrderBuilder: (orderData: IOrder, token: string) => dispatch(actions.purchaseBurger(orderData, token))
   }
 };
 

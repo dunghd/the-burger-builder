@@ -11,14 +11,15 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 type OrdersState = {};
 
 export interface IOrdersProps {
-  onFetchOrders: () => IOrder[],
+  onFetchOrders: (token: string) => IOrder[],
   orders: IOrder[],
-  loading: boolean
+  loading: boolean,
+  token: string
 };
 
 class Orders extends Component<IOrdersProps, OrdersState> {
   componentDidMount() {
-    this.props.onFetchOrders();
+    this.props.onFetchOrders(this.props.token);
   }
 
   render() {
@@ -44,13 +45,14 @@ class Orders extends Component<IOrdersProps, OrdersState> {
 const mapStateToProps = (state: any) => {
   return {
     orders: state.order.orders,
-    loading: state.order.loading
+    loading: state.order.loading,
+    token: state.auth.idToken
   } as IOrdersProps;
 };
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    onFetchOrders: () => dispatch(actions.fetchOrders()),
+    onFetchOrders: (token: any) => dispatch(actions.fetchOrders(token)),
   };
 };
 

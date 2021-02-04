@@ -18,7 +18,7 @@ type AuthState = {
   isSignUp: boolean
 };
 
-export interface IAuthProps { 
+export interface IAuthProps {
   onAuth: (email: string, password: string, isSignUp: boolean) => void,
   loading: boolean,
   error: Error
@@ -112,7 +112,7 @@ class Auth extends Component<IAuthProps, AuthState> {
   };
 
   switchAuthModeHandler = () => {
-    this.setState((prevState:AuthState) => {
+    this.setState((prevState: AuthState) => {
       return { isSignUp: !prevState.isSignUp } as AuthState;
     })
   };
@@ -136,7 +136,7 @@ class Auth extends Component<IAuthProps, AuthState> {
         shouldValidate={formElement.config.validation}
         touched={formElement.config.touched}
         changed={(event: any,) => { this.inputChangedHandler(event, formElement.id) }} />
-    ))}</> : <Spinner/>;
+    ))}</> : <Spinner />;
 
     let errorMessage = this.props.error !== null ?
       <p>{this.props.error.message}</p> : null;
@@ -150,10 +150,10 @@ class Auth extends Component<IAuthProps, AuthState> {
             btnType="Success"
             clicked={() => { }}>SUBMIT</Button>
         </form>
-        <Button 
+        <Button
           btnType={'Danger'}
           clicked={this.switchAuthModeHandler}>
-            SWITCH TO {this.state.isSignUp ? 'SIGN IN': 'SIGN UP'}</Button>
+          SWITCH TO {this.state.isSignUp ? 'SIGN IN' : 'SIGN UP'}</Button>
       </div>
     );
   };

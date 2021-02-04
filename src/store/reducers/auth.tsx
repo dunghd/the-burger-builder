@@ -1,5 +1,5 @@
 import * as actionTypes from '../actions/actionTypes';
-import {updateObject} from '../utility';
+import { updateObject } from '../utility';
 import * as actions from '../actions/auth';
 
 type authReducerState = {
@@ -18,8 +18,9 @@ const initialState = {
 
 const authStart = (state: any, action: actionTypes.Action<actions.IAuthStartAction>) => {
   return updateObject(state, {
-    error: action.payload.error, 
-    loading: action.payload.loading} as actions.IAuthStartAction);
+    error: action.payload.error,
+    loading: action.payload.loading
+  } as actions.IAuthStartAction);
 };
 
 const authSuccess = (state: any, action: actionTypes.Action<actions.IAuthSuccessAction>) => {
@@ -39,20 +40,20 @@ const authFail = (state: any, action: actionTypes.Action<actions.IAuthFailAction
 };
 
 const authLogout = (state: any, action: actionTypes.Action<actions.ILogoutAction>) => {
- return updateObject(state, {token: null, userId: null});
+  return updateObject(state, { idToken: null, userId: null });
 };
 
 const reducer = (state: any = initialState, action: actionTypes.Action<any>) => {
-  if(actionTypes.isType(action, actions.authStartAction)) {
+  if (actionTypes.isType(action, actions.authStartAction)) {
     return authStart(state, action);
   }
-  else if(actionTypes.isType(action, actions.authSuccessAction)) {
+  else if (actionTypes.isType(action, actions.authSuccessAction)) {
     return authSuccess(state, action);
   }
-  else if(actionTypes.isType(action, actions.authFailAction)) {
+  else if (actionTypes.isType(action, actions.authFailAction)) {
     return authFail(state, action);
   }
-  else if(actionTypes.isType(action, actions.logoutAction)) {
+  else if (actionTypes.isType(action, actions.logoutAction)) {
     return authLogout(state, action);
   }
   else {

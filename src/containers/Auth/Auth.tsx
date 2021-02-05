@@ -7,7 +7,7 @@ import Input from '../../components/UI/Input/Input';
 import { IOrderFormValidation, I_DOM_ElementInput } from '../Checkout/ContactData/ContactData';
 import classes from './Auth.module.css';
 import * as actions from '../../store/actions';
-import { error } from 'console';
+import { Redirect } from 'react-router-dom';
 
 type AuthFormControls = {
   [fieldName: string]: I_DOM_ElementInput
@@ -21,7 +21,11 @@ type AuthState = {
 export interface IAuthProps {
   onAuth: (email: string, password: string, isSignUp: boolean) => void,
   loading: boolean,
-  error: Error
+  error: Error,
+  isAuthenticated: boolean,
+  buildingBurger: boolean,
+  authRedirectPath: string,
+  onSetAuthRedirectPath: () => void
 };
 
 class Auth extends Component<IAuthProps, AuthState> {
@@ -58,6 +62,12 @@ class Auth extends Component<IAuthProps, AuthState> {
     },
     isSignUp: true
   } as AuthState;
+
+  componentDidMount() {
+    if (!this.props.buildingBurger && this.props.authRedirectPath !== '/') {
+      this.props.onSetAuthRedirectPath();
+    }
+  };
 
   checkValidity = (value: string, rules?: IOrderFormValidation): boolean => {
     let isValid = true;
@@ -141,8 +151,12 @@ class Auth extends Component<IAuthProps, AuthState> {
     let errorMessage = this.props.error !== null ?
       <p>{this.props.error.message}</p> : null;
 
+    let authRedirect = this.props.isAuthenticated
+      ? <Redirect to={this.props.authRedirectPath} /> : null;
+
     return (
       <div className={classes.Auth}>
+        {authRedirect}
         {errorMessage}
         <form onSubmit={this.submitHandler}>
           {form}
@@ -162,13 +176,17 @@ class Auth extends Component<IAuthProps, AuthState> {
 const mapStateToProps = (state: any) => {
   return {
     loading: state.auth.loading,
-    error: state.auth.error
+    error: state.auth.error,
+    isAuthenticated: state.auth.idToken !== null && state.auth.idToken !== undefined,
+    buildingBurger: state.burgerBuilder.building,
+    authRedirectPath: state.auth.authRedirectPath
   } as IAuthProps;
 };
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    onAuth: (email: string, password: string, isSignUp: boolean) => dispatch(actions.auth(email, password, isSignUp))
+    onAuth: (email: string, password: string, isSignUp: boolean) => dispatch(actions.auth(email, password, isSignUp)),
+    onSetAuthRedirectPath: () => dispatch(actions.setAuthRedirectPath('/'))
   };
 };
 

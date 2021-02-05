@@ -43,6 +43,10 @@ const authLogout = (state: any, action: actionTypes.Action<actions.ILogoutAction
   return updateObject(state, { idToken: null, userId: null });
 };
 
+const setAuthRedirectPath = (state: any, action: actionTypes.Action<actions.ISetAuthRedirectPathAction>) => {
+  return updateObject(state, { authRedirectPath: action.payload.path })
+};
+
 const reducer = (state: any = initialState, action: actionTypes.Action<any>) => {
   if (actionTypes.isType(action, actions.authStartAction)) {
     return authStart(state, action);
@@ -55,6 +59,9 @@ const reducer = (state: any = initialState, action: actionTypes.Action<any>) => 
   }
   else if (actionTypes.isType(action, actions.logoutAction)) {
     return authLogout(state, action);
+  }
+  else if (actionTypes.isType(action, actions.setAuthRedirectPathAction)) {
+    return setAuthRedirectPath(state, action);
   }
   else {
     return state;

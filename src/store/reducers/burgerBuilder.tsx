@@ -8,7 +8,9 @@ export interface IBurgerReducerState {
   totalPrice: number,
   error: boolean,
   loading: boolean,
-  token: string
+  token: string,
+  isAuthenticated: boolean,
+  building: boolean
 };
 
 export interface IBurgerReducerAction {
@@ -18,7 +20,8 @@ export interface IBurgerReducerAction {
 const initialState = {
   ingredients: {} as IIngredient,
   totalPrice: 4,
-  error: false
+  error: false,
+  building: false
 } as IBurgerReducerState;
 
 export interface IIngredientPrice {
@@ -39,7 +42,8 @@ const addIngredient = (state: any, action: Action<IBurgerReducerAction>) => {
   const updatedIngredients = updateObject(state.ingredients, updatedIngredient);
   const updateState = {
     ingredients: updatedIngredients,
-    totalPrice: state.totalPrice + INGREDIENT_PRICES[action.payload.ingredientName]
+    totalPrice: state.totalPrice + INGREDIENT_PRICES[action.payload.ingredientName],
+    building: true
   } as IBurgerReducerState;
   return updateObject(state, updateState);
 };
@@ -51,7 +55,8 @@ const removeIngredient = (state: any, action: Action<IBurgerReducerAction>) => {
   const updatedIngredients = updateObject(state.ingredients, updatedIngredient);
   const updateState = {
     ingredients: updatedIngredients,
-    totalPrice: state.totalPrice - INGREDIENT_PRICES[action.payload.ingredientName]
+    totalPrice: state.totalPrice - INGREDIENT_PRICES[action.payload.ingredientName],
+    building: true
   } as IBurgerReducerState;
   return updateObject(state, updateState);
 };
@@ -65,7 +70,8 @@ const setIngredient = (state: any, action: Action<IBurgerReducerState> & Action<
       meat: action.payload.meat,
     } as IIngredient,
     error: false,
-    totalPrice: 4
+    totalPrice: 4,
+    building: false
   } as IBurgerReducerState);
 };
 

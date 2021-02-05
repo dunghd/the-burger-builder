@@ -5,7 +5,7 @@ import * as actionTypes from './actionTypes';
 export interface IAuthStartAction {
   error: Error | null,
   loading: boolean
- };
+};
 
 export const authStartAction =
   actionTypes.actionCreator<IAuthStartAction>(actionTypes.AUTH_START);
@@ -18,8 +18,8 @@ export const authStart = () => {
 };
 
 export interface IAuthSuccessAction {
-  idToken: any, 
-  userId: string, 
+  idToken: any,
+  userId: string,
   error: Error | null,
   loading: boolean
 };
@@ -28,12 +28,12 @@ export const authSuccessAction =
   actionTypes.actionCreator<IAuthSuccessAction>(actionTypes.AUTH_SUCCESS);
 
 export const authSuccess = (token: any, userId: any) => {
-  return authSuccessAction({ 
+  return authSuccessAction({
     idToken: token,
     userId: userId,
     error: null,
-    loading:false
-   } as IAuthSuccessAction);
+    loading: false
+  } as IAuthSuccessAction);
 };
 
 export interface IAuthFailAction {
@@ -45,12 +45,12 @@ export const authFailAction =
   actionTypes.actionCreator<IAuthFailAction>(actionTypes.AUTH_FAIL);
 
 export const authFail = (error: Error) => {
-  return authFailAction({ error: error, loading: false} as IAuthFailAction);
+  return authFailAction({ error: error, loading: false } as IAuthFailAction);
 };
 
-export interface ILogoutAction {};
+export interface ILogoutAction { };
 
-export const logoutAction = 
+export const logoutAction =
   actionTypes.actionCreator<ILogoutAction>(actionTypes.AUTH_LOGOUT);
 
 export const logout = () => {
@@ -73,20 +73,31 @@ export const auth = (email: string, password: string, isSignUp: boolean) => {
       password: password,
       returnSecureToken: true
     };
-    let url = isSignUp ? 
-    'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAhzOep93XwplAWPfIzQBrXt0ehDC5RcCw' :
-    'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAhzOep93XwplAWPfIzQBrXt0ehDC5RcCw';
+    let url = isSignUp ?
+      'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAhzOep93XwplAWPfIzQBrXt0ehDC5RcCw' :
+      'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAhzOep93XwplAWPfIzQBrXt0ehDC5RcCw';
     axios.post(
       url,
       authData)
       .then(res => {
         console.log(res);
         dispatch(authSuccess(res.data.idToken, res.data.localId));
-        dispatch(checkAuthTimeout(res.data.expiresIn));        
+        dispatch(checkAuthTimeout(res.data.expiresIn));
       })
       .catch(err => {
         console.dir(err);
         dispatch(authFail(err.response.data.error));
       });
   };
+};
+
+export interface ISetAuthRedirectPathAction {
+  path: string
+};
+
+export const setAuthRedirectPathAction =
+  actionTypes.actionCreator<ISetAuthRedirectPathAction>(actionTypes.SET_AUTH_REDIRECT_PATH);
+
+export const setAuthRedirectPath = (path: string) => {
+  return setAuthRedirectPathAction({ path: path } as ISetAuthRedirectPathAction);
 };

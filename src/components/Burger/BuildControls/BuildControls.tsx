@@ -22,7 +22,8 @@ export interface IBuildControlProps {
   disabled: IIngredient,
   price: number,
   purchasable: boolean,
-  ordered: () => void
+  ordered: () => void,
+  isAuth: boolean
 };
 
 const buildControls = (props: React.PropsWithChildren<IBuildControlProps>) => (
@@ -39,7 +40,7 @@ const buildControls = (props: React.PropsWithChildren<IBuildControlProps>) => (
     <button
       className={classes.OrderButton}
       disabled={!props.purchasable}
-      onClick={props.ordered}>ORDER NOW</button>
+      onClick={props.ordered}>{props.isAuth ? `ORDER NOW` : `SIGN UP TO ORDER`}</button>
   </div>
 );
 

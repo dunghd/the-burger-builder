@@ -54,6 +54,9 @@ export const logoutAction =
   actionTypes.actionCreator<ILogoutAction>(actionTypes.AUTH_LOGOUT);
 
 export const logout = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('expirationDate');
+  localStorage.removeItem('userId');
   return logoutAction({} as ILogoutAction);
 };
 
@@ -81,6 +84,10 @@ export const auth = (email: string, password: string, isSignUp: boolean) => {
       authData)
       .then(res => {
         console.log(res);
+        const expirationDate = new Date(new Date().getTime() + res.data.expiresIn * 1000);
+        localStorage.setItem('token', res.data.idToken);
+        localStorage.setItem('expirationDate', expirationDate.toString());
+        localStorage.setItem('userId', res.data.localId);
         dispatch(authSuccess(res.data.idToken, res.data.localId));
         dispatch(checkAuthTimeout(res.data.expiresIn));
       })
@@ -100,4 +107,29 @@ export const setAuthRedirectPathAction =
 
 export const setAuthRedirectPath = (path: string) => {
   return setAuthRedirectPathAction({ path: path } as ISetAuthRedirectPathAction);
+};
+
+export const authCheckState = () => {
+  return (dispatch: any) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      dispatch(logout());
+    }
+    else {
+      if (!localStorage.getItem('expirationDate')) {
+        return;
+      }
+
+      const expirationDate = new Date(localStorage.getItem('expirationDate') as string);
+      if (expirationDate <= new Date()) {
+        dispatch(logout());
+      }
+      else {
+        const userId = localStorage.getItem('userId')
+        dispatch(authSuccess(token, userId));
+        const expirationDate = new Date(localStorage.getItem('expirationDate') as string);
+        dispatch(checkAuthTimeout((expirationDate.getTime() - new Date().getTime()) / 1000));
+      }
+    }
+  };
 };

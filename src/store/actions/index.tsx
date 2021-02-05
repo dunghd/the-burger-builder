@@ -18,4 +18,5 @@ export {
   , authFail
   , logout
   , setAuthRedirectPath
+  , authCheckState
 } from './auth';

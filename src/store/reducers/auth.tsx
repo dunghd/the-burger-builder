@@ -6,14 +6,16 @@ type authReducerState = {
   token: string | null,
   userId: string | null,
   error: Error | null,
-  loading: boolean
+  loading: boolean,
+  authRedirectPath: string
 };
 
 const initialState = {
   token: null,
   userId: null,
   error: null,
-  loading: false
+  loading: false,
+  authRedirectPath: '/'
 } as authReducerState;
 
 const authStart = (state: any, action: actionTypes.Action<actions.IAuthStartAction>) => {

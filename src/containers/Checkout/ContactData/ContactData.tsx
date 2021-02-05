@@ -9,7 +9,6 @@ import axios from '../../../axios-orders';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import { RouteComponentProps } from 'react-router-dom';
 import Input from '../../../components/UI/Input/Input';
-import { IBurgerReducerState } from '../../../store/reducers/burgerBuilder';
 import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
 import * as actions from '../../../store/actions';
 
@@ -71,7 +70,8 @@ export interface IContactDataProps extends RouteComponentProps {
   totalPrice: number,
   onOrderBuilder: (orderData: IOrder, token: string) => any,
   loading: boolean,
-  token: string
+  token: string,
+  userId: string
 };
 
 class ContactData extends Component<IContactDataProps, IContactDataState> {
@@ -170,7 +170,8 @@ class ContactData extends Component<IContactDataProps, IContactDataState> {
       id: undefined,
       ingredients: this.props.ingredients,
       price: this.props.totalPrice,
-      orderData: formData
+      orderData: formData,
+      userId: this.props.userId
     } as IOrder;
 
     this.props.onOrderBuilder(orderData, this.props.token);
@@ -273,8 +274,9 @@ const mapStateToProps = (state: any) => {
     ingredients: state.burgerBuilder.ingredients,
     totalPrice: state.burgerBuilder.totalPrice,
     loading: state.order.loading,
-    token: state.auth.idToken
-  } as IBurgerReducerState;
+    token: state.auth.idToken,
+    userId: state.auth.userId
+  } as IContactDataProps;
 };
 
 const mapDispatchToProps = (dispatch: any) => {

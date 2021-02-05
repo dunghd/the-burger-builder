@@ -12,7 +12,6 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import { RouteComponentProps } from 'react-router-dom';
 import { IOrderFormData } from '../Checkout/ContactData/ContactData';
-import { IBurgerReducerState } from '../../store/reducers/burgerBuilder';
 import * as actions from '../../store/actions';
 
 export interface IBurgerBuilderProps extends RouteComponentProps {
@@ -21,10 +20,11 @@ export interface IBurgerBuilderProps extends RouteComponentProps {
   isError: boolean,
   onIngredientAdded: (ingName: string) => void,
   onIngredientRemoved: (ingName: string) => void,
-  onInitIngredients: () => IIngredient,
+  onInitIngredients: (building: boolean) => IIngredient,
   onInitPurchase: () => void,
   isAuthenticated: boolean,
-  onSetAuthRedirectPath: (path: string) => void
+  onSetAuthRedirectPath: (path: string) => void,
+  isBuilding: boolean
 };
 
 export interface IBurgerBuilderState {
@@ -44,7 +44,7 @@ class BurgerBuilder extends Component<IBurgerBuilderProps, IBurgerBuilderState> 
   } as IBurgerBuilderState;
 
   componentDidMount() {
-    this.props.onInitIngredients();
+    this.props.onInitIngredients(this.props.isBuilding);
   }
 
   updatePurchaseState(ingredients: IIngredient): boolean {
@@ -128,19 +128,20 @@ const mapStateToProps = (state: any) => {
   return {
     ingredients: state.burgerBuilder.ingredients,
     totalPrice: state.burgerBuilder.totalPrice,
-    error: state.burgerBuilder.error,
-    isAuthenticated: state.auth.idToken !== null && state.auth.idToken !== undefined
-  } as IBurgerReducerState;
+    isError: state.burgerBuilder.error,
+    isAuthenticated: state.auth.idToken !== null && state.auth.idToken !== undefined,
+    isBuilding: state.burgerBuilder.building
+  } as IBurgerBuilderProps;
 };
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
     onIngredientAdded: (ingName: string) => dispatch(actions.addIngredient(ingName)),
     onIngredientRemoved: (ingName: string) => dispatch(actions.removeIngredient(ingName)),
-    onInitIngredients: () => dispatch(actions.initIngredients()),
+    onInitIngredients: (building: boolean) => dispatch(actions.initIngredients(building)),
     onInitPurchase: () => dispatch(actions.purchaseInit()),
     onSetAuthRedirectPath: (path: string) => dispatch(actions.setAuthRedirectPath(path))
-  };
+  } as IBurgerBuilderProps;
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(BurgerBuilder, axios));

@@ -32,12 +32,8 @@ export const fetchIngredientsFailed = () => {
   return fetchIngredientsFailedAction;
 };
 
-export const initIngredients = (isBuilding: boolean) => {
+export const initIngredients = () => {
   return (dispatch: any) => {
-    if (isBuilding) {
-      return;
-    }
-
     axios.get('https://react-my-burger-c95b7-default-rtdb.firebaseio.com/ingredients.json')
       .then(response => {
         dispatch(setIngredients(response.data));

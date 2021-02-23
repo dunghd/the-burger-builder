@@ -20,11 +20,10 @@ export interface IBurgerBuilderProps extends RouteComponentProps {
   isError: boolean,
   onIngredientAdded: (ingName: string) => void,
   onIngredientRemoved: (ingName: string) => void,
-  onInitIngredients: (building: boolean) => IIngredient,
+  onInitIngredients: () => IIngredient,
   onInitPurchase: () => void,
   isAuthenticated: boolean,
-  onSetAuthRedirectPath: (path: string) => void,
-  isBuilding: boolean
+  onSetAuthRedirectPath: (path: string) => void
 };
 
 export interface IBurgerBuilderState {
@@ -44,7 +43,7 @@ class BurgerBuilder extends Component<IBurgerBuilderProps, IBurgerBuilderState> 
   } as IBurgerBuilderState;
 
   componentDidMount() {
-    this.props.onInitIngredients(this.props.isBuilding);
+    this.props.onInitIngredients();
   }
 
   updatePurchaseState(ingredients: IIngredient): boolean {
@@ -129,8 +128,7 @@ const mapStateToProps = (state: any) => {
     ingredients: state.burgerBuilder.ingredients,
     totalPrice: state.burgerBuilder.totalPrice,
     isError: state.burgerBuilder.error,
-    isAuthenticated: state.auth.idToken !== null && state.auth.idToken !== undefined,
-    isBuilding: state.burgerBuilder.building
+    isAuthenticated: state.auth.idToken !== null && state.auth.idToken !== undefined
   } as IBurgerBuilderProps;
 };
 
@@ -138,7 +136,7 @@ const mapDispatchToProps = (dispatch: any) => {
   return {
     onIngredientAdded: (ingName: string) => dispatch(actions.addIngredient(ingName)),
     onIngredientRemoved: (ingName: string) => dispatch(actions.removeIngredient(ingName)),
-    onInitIngredients: (building: boolean) => dispatch(actions.initIngredients(building)),
+    onInitIngredients: () => dispatch(actions.initIngredients()),
     onInitPurchase: () => dispatch(actions.purchaseInit()),
     onSetAuthRedirectPath: (path: string) => dispatch(actions.setAuthRedirectPath(path))
   } as IBurgerBuilderProps;

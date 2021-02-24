@@ -1,7 +1,7 @@
 import { IOrder } from '../../containers/BurgerBuilder/BurgerBuilder';
 import { Action, isType } from '../actions/actionTypes';
 import * as actions from '../actions/order';
-import { updateObject } from '../utility';
+import { updateObject } from '../../shared/utility';
 
 export interface IOrderReducerState {
   orders: IOrder[],

@@ -1,7 +1,7 @@
 import { IIngredient } from '../../components/Burger/BurgerIngredient/BurgerIngredient';
 import { Action, isType } from '../actions/actionTypes';
 import * as actions from '../actions/burgerBuilder';
-import { updateObject } from '../utility';
+import { updateObject } from '../../shared/utility';
 
 export interface IBurgerReducerState {
   ingredients: IIngredient,

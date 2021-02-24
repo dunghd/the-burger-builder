@@ -21,7 +21,7 @@ const sideDrawer = (props: React.PropsWithChildren<ISideDrawerProps>) => {
   return (
     <Auxiliary>
       <Backdrop show={props.open} click={props.closed} />
-      <div className={attachedClasses.join(' ')}>
+      <div className={attachedClasses.join(' ')} onClick={props.closed}>
         <div className={classes.Logo}>
           <Logo />
         </div>

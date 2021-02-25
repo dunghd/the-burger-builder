@@ -13,10 +13,6 @@ export interface IOrderSummaryProps {
 export interface IOrderSummaryState { };
 
 class OrderSummary extends Component<IOrderSummaryProps, IOrderSummaryState>  {
-  componentWillUpdate() {
-    console.log(`[OrderSummary] WillUpdate`);
-  }
-
   render() {
     const ingredientSummary = Object.keys(this.props.ingredients)
       .map(igKey => {

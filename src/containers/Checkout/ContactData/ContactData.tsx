@@ -11,7 +11,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import Input from '../../../components/UI/Input/Input';
 import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
 import * as actions from '../../../store/actions';
-import { updateObject } from '../../../shared/utility';
+import { updateObject, checkValidity, IOrderFormValidation } from '../../../shared/utility';
 
 interface I_DOM_ElementInputConfig {
   type: string,
@@ -51,14 +51,6 @@ interface IOrderForm {
 
 export interface IOrderFormData {
   [fieldName: string]: any
-};
-
-export interface IOrderFormValidation {
-  required?: boolean,
-  minLength?: number,
-  maxLength?: number,
-  isEmail?: boolean,
-  isNumeric?: boolean
 };
 
 interface IContactDataState {
@@ -178,42 +170,11 @@ class ContactData extends Component<IContactDataProps, IContactDataState> {
     this.props.onOrderBuilder(orderData, this.props.token);
   };
 
-  checkValidity = (value: string, rules?: IOrderFormValidation): boolean => {
-    let isValid = true;
-    if (!rules) {
-      return true;
-    }
-
-    if (rules.required) {
-      isValid = value.trim() !== '' && isValid;
-    }
-
-    if (rules.minLength) {
-      isValid = value.length >= rules.minLength && isValid
-    }
-
-    if (rules.maxLength) {
-      isValid = value.length <= rules.maxLength && isValid
-    }
-
-    if (rules.isEmail) {
-      const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-      isValid = pattern.test(value) && isValid
-    }
-
-    if (rules.isNumeric) {
-      const pattern = /^\d+$/;
-      isValid = pattern.test(value) && isValid
-    }
-
-    return isValid;
-  };
-
   inputChangedHandler = (event: any, inputIdentifier: string) => {
 
     const updatedFormElement = updateObject(this.state.orderForm[inputIdentifier], {
       value: event.target.value,
-      valid: this.checkValidity(event.target.value, this.state.orderForm[inputIdentifier].validation),
+      valid: checkValidity(event.target.value, this.state.orderForm[inputIdentifier].validation),
       touched: true,
     });
     const updatedOrderForm = updateObject(this.state.orderForm, {
